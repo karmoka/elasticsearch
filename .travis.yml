@@ -4,7 +4,6 @@ install: true
 
 dist: trusty
 jdk:
-  - openjdk8
   - openjdk13
 
 matrix:
@@ -19,3 +18,5 @@ script:
   - echo $JAVA_HOME
   - java -version
   - ./gradlew :modules:percolator:build :modules:percolator:test :modules:rank-eval:build :modules:rank-eval:test :modules:ingest-geoip:build :modules:ingest-geoip:test :modules:parent-join:build :modules:parent-join:test
+  
+  
