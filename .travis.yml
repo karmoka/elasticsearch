@@ -17,4 +17,4 @@ branches:
 script:
   - echo $JAVA_HOME
   - java -version
-  - ./gradlew --continue clean build --scan -s -p modules/percolator
+  - ./gradlew --continue build -s -p modules/
