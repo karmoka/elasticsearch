@@ -4,7 +4,7 @@ install: true
 
 dist: trusty
 jdk:
-  - oraclejdk8
+  - oraclejdk11
 
 matrix:
   allow_failures:
@@ -17,7 +17,7 @@ branches:
 before_script:
   - echo $JAVA_HOME
   - java -version
-  - export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+  - export JAVA_HOME=/usr/lib/jvm/java-11-oracle
 
 script:
   - java -version
