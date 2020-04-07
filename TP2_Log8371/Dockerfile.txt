@@ -1,0 +1,10 @@
+FROM docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+USER elasticsearch
+
+RUN yum install wget sudo
+RUN wget https://download-gcdn.ej-technologies.com/jprofiler/jprofiler_linux_11_1_2.tar.gz -P /tmp/ &&\
+ tar -xzf /tmp/jprofiler_linux_11_1_2.tar.gz -C /usr/local &&\
+ rm /tmp/jprofiler_linux_11_1_2.tar.gz
+RUN env JPAGENT_PATH="-agentpath:/usr/local/jprofiler_linux_11_1_2/bin/linux-x64/libjprofilerti.so=port=8849=nowait"
+
+EXPOSE 8849

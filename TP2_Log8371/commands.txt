@@ -1,0 +1,43 @@
+!====== Set up ======!
+apache-jmeter-5.2.1/bin/jmeter
+
+sudo apt-get update
+sudo apt-get remove docker docker-engine docker.io
+sudo apt install docker.io
+
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo sysctl -w vm.max_map_count=262144
+export DOCKER_HOST=127.0.0.1:2375
+
+sudo docker-compose up 
+sudo docker-compose up --scale elasticsearch3=2
+
+!====== Monitoring ======!
+sudo docker stats
+
+sudo docker run \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:rw \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --publish=8080:8080 \
+  --detach=true \
+  --name=cadvisor \
+  google/cadvisor:latest
+
+
+!====== JProfiler ======!
+yum install wget sudo java-1.8.0-openjdk
+
+wget https://download-gcdn.ej-technologies.com/jprofiler/jprofiler_linux_11_1_2.tar.gz -P /tmp/ &&\
+ tar -xzf /tmp/jprofiler_linux_11_1_2.tar.gz -C /usr/local &&\
+ rm /tmp/jprofiler_linux_11_1_2.tar.gz
+
+env JPAGENT_PATH="-agentpath:/usr/local/jprofiler_linux_11_1_2/bin/linux-x64/libjprofilerti.so=port=8849=nowait"
+
+jprofiler_linux_11_1_2/bin/jpenable
+
+!====== Util ======!
+sudo docker stop $(sudo docker ps -a -q)
+sudo docker rm $(sudo docker ps -a -q)

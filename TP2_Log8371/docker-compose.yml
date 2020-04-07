@@ -1,0 +1,65 @@
+version: "2.2"
+services:
+  es_master:
+    image: aa9a20e8f844
+    container_name: es_master
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.minimum_master_nodes=2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    expose:
+      - "8080"
+      - "8849"
+    ports:
+      - 9200:9200
+      - 8081:8080
+      - 9000:8849
+    networks:
+      - esnet
+  es_master2:
+    image: aa9a20e8f844
+    container_name: es_master2
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=es_master"
+      - discovery.zen.minimum_master_nodes=2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - esnet
+  es_slave:
+    image: aa9a20e8f844
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=es_master"
+      - discovery.zen.minimum_master_nodes=2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - esnet
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+networks:
+  esnet:
